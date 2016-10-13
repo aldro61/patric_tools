@@ -5,8 +5,8 @@
 import numpy as np
 import pandas as pd
 
-from patric_tools.config import PATRIC_FTP_AMR_METADATA_URL
-from patric_tools.utils import download_file_from_url
+from .config import PATRIC_FTP_AMR_METADATA_URL
+from .utils import download_file_from_url
 
 
 def get_latest_metadata(outdir):

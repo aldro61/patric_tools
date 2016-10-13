@@ -8,8 +8,8 @@ try:
 except ImportError: # Python 3
     pass  # TODO: include urljoin
 
-from patric_tools.config import PATRIC_FTP_GENOMES_FNA_URL
-from patric_tools.utils import download_file_from_url
+from .config import PATRIC_FTP_GENOMES_FNA_URL
+from .utils import download_file_from_url
 
 
 def download_genome_contigs(patric_id, outdir="."):
