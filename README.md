@@ -1,4 +1,4 @@
-# patric_tools
+# PATRIC tools
 Python package to interact with the PATRIC database (https://www.patricbrc.org)
 
 Disclaimer
