@@ -2,11 +2,14 @@
 
 
 """
+import ftplib
 import numpy as np
 import os
 import pandas as pd
 
-from .config import PATRIC_FTP_AMR_METADATA_URL
+from datetime import datetime
+
+from .config import PATRIC_FTP_AMR_METADATA_URL, PATRIC_FTP_BASE_URL
 from .utils import download_file_from_url, url_extract_file_name
 
 
@@ -39,8 +42,9 @@ def get_amr_data_by_species_and_antibiotic(amr_metadata_file, antibiotic, specie
 
     amr = pd.read_table(amr_metadata_file, usecols=["genome_id", "genome_name", "antibiotic", "resistant_phenotype"],
                         converters={'genome_id': str, 'genome_name': lambda x: " ".join(x.lower().split()[:2])})
-    amr = amr.loc[amr.antibiotic == antibiotic]
     amr = amr.dropna()
+    amr = amr.loc[amr.antibiotic == antibiotic]
+    amr = _remove_duplicates(amr)
 
     assert len(np.unique(amr.resistant_phenotype)) <= 3  # If this fails, the data structure changed
 
@@ -59,6 +63,22 @@ def get_amr_data_by_species_and_antibiotic(amr_metadata_file, antibiotic, specie
     return amr["genome_name"].values, amr["genome_id"].values, numeric_phenotypes
 
 
+def get_last_metadata_update_date():
+    """
+    Get the date and time at which the AMR metadata was last modified
+
+    Returns:
+    --------
+    datetime: DateTime
+        The date and time at which the metadata was last modified
+
+    """
+    ftps = ftplib.FTP(PATRIC_FTP_BASE_URL.replace("ftp://", ""))
+    ftps.login()
+    mod_time = ftps.sendcmd("MDTM %s" % PATRIC_FTP_AMR_METADATA_URL.replace(PATRIC_FTP_BASE_URL, "").replace("ftp://", "")[1:]).split()[1]
+    return datetime.strptime(mod_time, '%Y%m%d%H%M%S')
+
+
 def get_latest_metadata(outdir):
     """
     Downloads the latest antimicrobial resistance metadata
@@ -75,6 +95,13 @@ def get_latest_metadata(outdir):
     return os.path.join(outdir, url_extract_file_name(PATRIC_FTP_AMR_METADATA_URL))
 
 
+def _remove_duplicates(data):
+    # Keep only one measurement for the same genome, antibiotic and phenotype
+    data = data.drop_duplicates(subset=['genome_id', 'antibiotic', 'resistant_phenotype'], keep='first')
+    # Drop all genomes/antibiotic combinations for which we have contradictory measurements
+    data = data.drop_duplicates(subset=['genome_id', 'antibiotic'], keep=False)
+    return data
+
 def list_amr_datasets(amr_metadata_file, min_resistant=0, max_resistant=None, min_susceptible=0,
                       max_susceptible=None, single_species=True):
 
@@ -85,6 +112,7 @@ def list_amr_datasets(amr_metadata_file, min_resistant=0, max_resistant=None, mi
 
     amr = pd.read_table(amr_metadata_file, usecols=["genome_id", "genome_name", "antibiotic", "resistant_phenotype"],
                         converters={'genome_id': str, 'genome_name': lambda x: " ".join(x.lower().split()[:2])})
+    amr = amr.dropna()
 
     dataset_species = []
     dataset_antibiotics = []
@@ -95,6 +123,8 @@ def list_amr_datasets(amr_metadata_file, min_resistant=0, max_resistant=None, mi
         amr = amr.groupby('antibiotic')
 
     for name, data in amr:
+        data = _remove_duplicates(data)
+
         n_res = (data["resistant_phenotype"] == "Resistant").sum()
         n_sus = (data["resistant_phenotype"] == "Susceptible").sum()
 
