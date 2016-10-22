@@ -134,6 +134,6 @@ def list_amr_datasets(amr_metadata_file, min_resistant=0, max_resistant=None, mi
                 dataset_species.append([name[0]])
             else:
                 dataset_antibiotics.append(name)
-                dataset_species.append(None)
+                dataset_species.append(data["genome_name"].unique())
 
     return zip(dataset_species, dataset_antibiotics)
