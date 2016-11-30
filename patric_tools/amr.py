@@ -54,7 +54,8 @@ def get_amr_data_by_species_and_antibiotic(amr_metadata_file, antibiotic, specie
 
     # Keep only specified species
     if species is not None:
-        amr = amr.loc[[n in species for n in amr.genome_name]]
+        species = [s.lower() for s in species]
+        amr = amr.loc[[n.lower() in species for n in amr.genome_name]]
 
     numeric_phenotypes = np.zeros(amr.shape[0], dtype=np.uint8)
     numeric_phenotypes[amr.resistant_phenotype.values == "Resistant"] = 1
