@@ -52,7 +52,7 @@ setup(
     ],
 
     # What does your project relate to?
-    keywords='bioinformatics database',
+    keywords='patric bioinformatics antibiotic-resistance genomics database',
 
     packages=find_packages(),
 
