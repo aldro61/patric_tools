@@ -33,7 +33,7 @@ def download_file_from_url(url, outdir):
     url = url.strip()
     try:
         from os import system
-        system("wget --quiet -o /dev/null -O %s --continue --timeout 20 %s" % (os.path.join(outdir, url_extract_file_name(url)), url))
+        system("wget --quiet -o /dev/null -O {0!s} --continue --timeout 20 {1!s}".format(os.path.join(outdir, url_extract_file_name(url)), url))
         return ""
     except Exception as e:
         print e
