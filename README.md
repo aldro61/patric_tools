@@ -3,8 +3,11 @@
 
 
 # PATRIC tools
-Python package to interact with the PATRIC database (https://www.patricbrc.org)
+A Python package to interact with the PATRIC database (https://www.patricbrc.org)
 
-Disclaimer
---
+## Notes
+
+* This package is highly dependant on the structure of the FTP directories at PATRIC. If the structure changes, parts of the code may need to be updated.
+
+## Disclaimer
 This is not an official tool of the PATRIC database. It is a package that I use for my personal interaction with the database.
