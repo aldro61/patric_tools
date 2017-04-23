@@ -76,7 +76,7 @@ def get_last_metadata_update_date():
     """
     ftps = ftplib.FTP(PATRIC_FTP_BASE_URL.replace("ftp://", ""))
     ftps.login()
-    mod_time = ftps.sendcmd("MDTM %s" % PATRIC_FTP_AMR_METADATA_URL.replace(PATRIC_FTP_BASE_URL, "").replace("ftp://", "")[1:]).split()[1]
+    mod_time = ftps.sendcmd("MDTM {0!s}".format(PATRIC_FTP_AMR_METADATA_URL.replace(PATRIC_FTP_BASE_URL, "").replace("ftp://", "")[1:])).split()[1]
     return datetime.strptime(mod_time, '%Y%m%d%H%M%S')
 
 
@@ -92,7 +92,7 @@ def get_latest_metadata(outdir):
     """
     exception = download_file_from_url(PATRIC_FTP_AMR_METADATA_URL, outdir)
     if exception != '':
-        raise RuntimeError("Failed to download the latest AMR metadata: %s" % exception)
+        raise RuntimeError("Failed to download the latest AMR metadata: {0!s}".format(exception))
     return os.path.join(outdir, url_extract_file_name(PATRIC_FTP_AMR_METADATA_URL))
 
 

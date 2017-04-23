@@ -37,7 +37,7 @@ def download_genome_contigs(patric_id, outdir=".", throttle=False):
     if throttle:
         sleep(2)  # Give that server a break!
     file_name = urljoin(PATRIC_FTP_GENOMES_FNA_URL, patric_id + ".fna")
-    logging.debug("Downloading contigs for genome %s (%s)" % (patric_id, file_name))
+    logging.debug("Downloading contigs for genome {0!s} ({1!s})".format(patric_id, file_name))
     return download_file_from_url(file_name, outdir=outdir)
 
 
@@ -63,7 +63,7 @@ def download_genome_patric_annotations(patric_id, outdir=".", throttle=False):
     if throttle:
         sleep(2)  # Give that server a break!
     file_name = urljoin(PATRIC_FTP_GENOMES_TAB_URL, patric_id + ".PATRIC.features.tab")
-    logging.debug("Downloading PATRIC annotations for genome %s (%s)" % (patric_id, file_name))
+    logging.debug("Downloading PATRIC annotations for genome {0!s} ({1!s})".format(patric_id, file_name))
     return download_file_from_url(file_name, outdir=outdir)
 
 
@@ -79,5 +79,5 @@ def get_latest_metadata(outdir):
     """
     exception = download_file_from_url(PATRIC_FTP_GENOMES_METADATA_URL, outdir)
     if exception != '':
-        raise RuntimeError("Failed to download the latest AMR metadata: %s" % exception)
+        raise RuntimeError("Failed to download the latest AMR metadata: {0!s}".format(exception))
     return os.path.join(outdir, url_extract_file_name(PATRIC_FTP_GENOMES_METADATA_URL))
