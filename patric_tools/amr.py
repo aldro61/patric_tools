@@ -37,6 +37,11 @@ def get_amr_data_by_species_and_antibiotic(amr_metadata_file, antibiotic, specie
     species: array_like, dtype=str
         The species of each genome
 
+    Notes:
+    ------
+    The phenotypes "Not defined", "Non-susceptible" and "Nonsusceptible" are dropped to avoid adding noise to the data.
+    However, this phenotypes are not commonly encountered in the data.
+
     """
     antibiotic = antibiotic.lower()
 
@@ -46,7 +51,13 @@ def get_amr_data_by_species_and_antibiotic(amr_metadata_file, antibiotic, specie
     amr = amr.loc[amr.antibiotic == antibiotic]
     amr = _remove_duplicates(amr)
 
-    assert len(np.unique(amr.resistant_phenotype)) <= 3  # If this fails, the data structure changed
+    # Drop strange phenotype names that were encountered
+    amr = amr.loc[amr.resistant_phenotype != "Not defined"]
+    amr = amr.loc[amr.resistant_phenotype != "Non-susceptible"]
+    amr = amr.loc[amr.resistant_phenotype != "Nonsusceptible"]
+
+    # XXX: Runtime test to see if the data structure has changed
+    assert len(np.unique(amr.resistant_phenotype)) <= 3
 
     # Drop intermediate if needed
     if drop_intermediate:
@@ -102,6 +113,7 @@ def _remove_duplicates(data):
     # Drop all genomes/antibiotic combinations for which we have contradictory measurements
     data = data.drop_duplicates(subset=['genome_id', 'antibiotic'], keep=False)
     return data
+
 
 def list_amr_datasets(amr_metadata_file, min_resistant=0, max_resistant=None, min_susceptible=0,
                       max_susceptible=None, single_species=True):
