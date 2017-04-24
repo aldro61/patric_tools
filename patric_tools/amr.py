@@ -1,5 +1,16 @@
 """
-
+    patric_tools: A Python package to download data from the PATRIC database
+    Copyright (C) 2017 Alexandre Drouin
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 """
 import ftplib
@@ -8,25 +19,26 @@ import os
 import pandas as pd
 
 from datetime import datetime
+from tempfile import tempdir
 
 from .config import PATRIC_FTP_AMR_METADATA_URL, PATRIC_FTP_BASE_URL
 from .utils import download_file_from_url, url_extract_file_name
 
 
-def get_amr_data_by_species_and_antibiotic(amr_metadata_file, antibiotic, species=None, drop_intermediate=True):
+def get_amr_data_by_species_and_antibiotic(antibiotic, species=None, drop_intermediate=True, amr_metadata_file=None):
     """
     Returns the PATRIC identifiers of the genomes for which there is AMR metadata for some antibiotic
 
     Parameters:
     -----------
-    amr_metadata_file: str
-        The path to the AMR metadata file
     antibiotic: str
         The name of the antibiotic
-    drop_intermediate: bool, default=True
-        Whether or not to consider the genomes with the "Intermediate" phenotype
-    species: list, default=None
+    species: list, optional, default=None
         If not specified, all species are considered. Otherwise, only the specified species are considered.
+    drop_intermediate: bool, optional, default=True
+        Whether or not to consider the genomes with the "Intermediate" phenotype
+    amr_metadata_file: str, optional
+        The path to the AMR metadata file. If not specified, the latest metadata will be downloaded to a temporary file.
 
     Returns:
     --------
@@ -43,6 +55,9 @@ def get_amr_data_by_species_and_antibiotic(amr_metadata_file, antibiotic, specie
     However, this phenotypes are not commonly encountered in the data.
 
     """
+    if amr_metadata_file is None:
+        amr_metadata_file = get_latest_metadata(tempdir)
+
     antibiotic = antibiotic.lower()
 
     amr = pd.read_table(amr_metadata_file, usecols=["genome_id", "genome_name", "antibiotic", "resistant_phenotype"],
@@ -77,7 +92,7 @@ def get_amr_data_by_species_and_antibiotic(amr_metadata_file, antibiotic, specie
 
 def get_last_metadata_update_date():
     """
-    Get the date and time at which the AMR metadata was last modified
+    Get the date and time at which the antimicrobial metadata was last modified
 
     Returns:
     --------
@@ -115,13 +130,27 @@ def _remove_duplicates(data):
     return data
 
 
-def list_amr_datasets(amr_metadata_file, min_resistant=0, max_resistant=None, min_susceptible=0,
-                      max_susceptible=None, single_species=True):
+def list_amr_datasets(amr_metadata_file=None, min_resistant=0, max_resistant=np.infty, min_susceptible=0,
+                      max_susceptible=np.infty, single_species=True):
+    """
+    Extracts all antimicrobial resistance datasets from the database metadata
 
-    if max_resistant is None:
-        max_resistant = np.infty
-    if max_susceptible is None:
-        max_susceptible = np.infty
+    Parameters:
+    -----------
+    amr_metadata_file: str, optional
+        The path to the AMR metadata file. If not specified, the latest metadata will be downloaded to a temporary file.
+    min_resistant: int, optional, default=0
+        The minimum number of resistant isolates in the dataset.
+    max_resistant: int, optional, default=inf
+        The maximum number of resistant isolates in the dataset.
+    min_susceptible: int, optional, default=0
+        The minimum number of susceptible isolates in the dataset.
+    max_susceptible: int, optional, default=inf
+        The maximum number of susceptible isolates in the dataset.
+
+    """
+    if amr_metadata_file is None:
+        amr_metadata_file = get_latest_metadata(tempdir)
 
     amr = pd.read_table(amr_metadata_file, usecols=["genome_id", "genome_name", "antibiotic", "resistant_phenotype"],
                         converters={'genome_id': str, 'genome_name': lambda x: " ".join(x.lower().split()[:2])})
