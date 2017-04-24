@@ -19,7 +19,7 @@ import os
 import pandas as pd
 
 from datetime import datetime
-from tempfile import tempdir
+from tempfile import gettempdir
 
 from .config import PATRIC_FTP_AMR_METADATA_URL, PATRIC_FTP_BASE_URL
 from .utils import download_file_from_url, url_extract_file_name
@@ -44,10 +44,10 @@ def get_amr_data_by_species_and_antibiotic(antibiotic, species=None, drop_interm
     --------
     patric_ids: array_like, dtpye=str
         The PATRIC identifiers of the genomes
-    phenotypes: array_like, dtype=uint8
-        The phenotype of each genome (0 = sensitive, 1 = resistant, 2 = intermediate)
     species: array_like, dtype=str
         The species of each genome
+    phenotypes: array_like, dtype=uint8
+        The phenotype of each genome (0 = sensitive, 1 = resistant, 2 = intermediate)
 
     Notes:
     ------
@@ -56,7 +56,7 @@ def get_amr_data_by_species_and_antibiotic(antibiotic, species=None, drop_interm
 
     """
     if amr_metadata_file is None:
-        amr_metadata_file = get_latest_metadata(tempdir)
+        amr_metadata_file = get_latest_metadata(gettempdir())
 
     antibiotic = antibiotic.lower()
 
@@ -150,7 +150,7 @@ def list_amr_datasets(amr_metadata_file=None, min_resistant=0, max_resistant=np.
 
     """
     if amr_metadata_file is None:
-        amr_metadata_file = get_latest_metadata(tempdir)
+        amr_metadata_file = get_latest_metadata(gettempdir())
 
     amr = pd.read_table(amr_metadata_file, usecols=["genome_id", "genome_name", "antibiotic", "resistant_phenotype"],
                         converters={'genome_id': str, 'genome_name': lambda x: " ".join(x.lower().split()[:2])})
