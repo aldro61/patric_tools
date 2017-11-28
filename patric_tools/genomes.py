@@ -78,7 +78,7 @@ def download_genome_features(patric_id, outdir=".", throttle=False):
     return download_file_from_url(file_name, outdir=outdir)
 
 
-def download_genome_pattyfam_annotations(patric_id, outdir=".", throttle=False):
+def download_genome_pattyfams(patric_id, outdir=".", throttle=False):
     """
     Downloads the PATRIC PATtyFams annotations for a given genome
 
