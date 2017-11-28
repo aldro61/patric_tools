@@ -32,10 +32,10 @@ def download_genome_contigs(patric_id, outdir=".", throttle=False):
 
     Parameters:
     -----------
-    outdir: str
-        The output directory in which to store the contig file
     patric_id: str
         The PATRIC identifier of the genome
+    outdir: str
+        The output directory in which to store the contig file
     throttle: bool
         Whether or not to throttle the download by sleeping for a short period of time
 
@@ -52,16 +52,16 @@ def download_genome_contigs(patric_id, outdir=".", throttle=False):
     return download_file_from_url(file_name, outdir=outdir)
 
 
-def download_genome_patric_annotations(patric_id, outdir=".", throttle=False):
+def download_genome_features(patric_id, outdir=".", throttle=False):
     """
     Downloads the PATRIC feature annotations for a given genome
 
     Parameters:
     -----------
+    patric_id: str
+            The PATRIC identifier of the genome
     outdir: str
         The output directory in which to store the annotation file
-    patric_id: str
-        The PATRIC identifier of the genome
     throttle: bool
         Whether or not to throttle the download by sleeping for a short period of time
 
@@ -74,7 +74,38 @@ def download_genome_patric_annotations(patric_id, outdir=".", throttle=False):
     if throttle:
         sleep(2)  # Give that server a break!
     file_name = urljoin(PATRIC_FTP_GENOMES_TAB_URL, patric_id + ".PATRIC.features.tab")
-    logging.debug("Downloading PATRIC annotations for genome {0!s} ({1!s})".format(patric_id, file_name))
+    logging.debug("Downloading PATRIC feature annotations for genome {0!s} ({1!s})".format(patric_id, file_name))
+    return download_file_from_url(file_name, outdir=outdir)
+
+
+def download_genome_pattyfam_annotations(patric_id, outdir=".", throttle=False):
+    """
+    Downloads the PATRIC PATtyFams annotations for a given genome
+
+    Reference:
+    -----------
+    Davis et al. PATtyFams: Protein Families for the Microbial Genomes in the PATRIC Database.
+    Frontiers in Microbiology. 2016;7:118. doi:10.3389/fmicb.2016.00118.
+
+    Parameters:
+    -----------
+    patric_id: str
+            The PATRIC identifier of the genome
+    outdir: str
+        The output directory in which to store the annotation file
+    throttle: bool
+        Whether or not to throttle the download by sleeping for a short period of time
+
+    Returns:
+    --------
+    exception: str
+        Empty string if no exception occurred, exception info otherwise
+
+    """
+    if throttle:
+        sleep(2)  # Give that server a break!
+    file_name = urljoin(PATRIC_FTP_GENOMES_TAB_URL, patric_id + ".PATRIC.cds.tab")
+    logging.debug("Downloading PATRIC PATtyFams for genome {0!s} ({1!s})".format(patric_id, file_name))
     return download_file_from_url(file_name, outdir=outdir)
 
 
