@@ -57,7 +57,7 @@ class UtilityTests(TestCase):
         FTP genome FASTA file storage is reachable
         """
         example_genome = "1280.4252"
-        self._test_url(urljoin(PATRIC_FTP_GENOMES_URL, example_genome, example_genome + ".fna"))
+        self._test_url(urljoin(PATRIC_FTP_GENOMES_URL, example_genome + "/" + example_genome + ".fna"))
 
     def test_ftp_genomes_metadata_url(self):
         """
@@ -70,4 +70,4 @@ class UtilityTests(TestCase):
         FTP genome TAB file storage is reachable
         """
         example_genome = "1280.4252"
-        self._test_url(urljoin(PATRIC_FTP_GENOMES_URL, example_genome, example_genome + ".PATRIC.features.tab"))
+        self._test_url(urljoin(PATRIC_FTP_GENOMES_URL, example_genome + "/" + example_genome + ".PATRIC.features.tab"))
