@@ -22,7 +22,7 @@ except ImportError: # Python 3
 
 from time import sleep
 
-from .config import PATRIC_FTP_GENOMES_FNA_URL, PATRIC_FTP_GENOMES_METADATA_URL, PATRIC_FTP_GENOMES_TAB_URL
+from .config import PATRIC_FTP_GENOMES_URL, PATRIC_FTP_GENOMES_METADATA_URL
 from .utils import download_file_from_url, url_extract_file_name
 
 
@@ -47,45 +47,21 @@ def download_genome_contigs(patric_id, outdir=".", throttle=False):
     """
     if throttle:
         sleep(2)  # Give that server a break!
-    file_name = urljoin(PATRIC_FTP_GENOMES_FNA_URL, patric_id + ".fna")
+    file_name = urljoin(PATRIC_FTP_GENOMES_URL, patric_id, patric_id + ".fna")
     logging.debug("Downloading contigs for genome {0!s} ({1!s})".format(patric_id, file_name))
     return download_file_from_url(file_name, outdir=outdir)
 
 
 def download_genome_features(patric_id, outdir=".", throttle=False):
     """
-    Downloads the PATRIC feature annotations for a given genome
-
-    Parameters:
-    -----------
-    patric_id: str
-            The PATRIC identifier of the genome
-    outdir: str
-        The output directory in which to store the annotation file
-    throttle: bool
-        Whether or not to throttle the download by sleeping for a short period of time
-
-    Returns:
-    --------
-    exception: str
-        Empty string if no exception occurred, exception info otherwise
-
-    """
-    if throttle:
-        sleep(2)  # Give that server a break!
-    file_name = urljoin(PATRIC_FTP_GENOMES_TAB_URL, patric_id + ".PATRIC.features.tab")
-    logging.debug("Downloading PATRIC feature annotations for genome {0!s} ({1!s})".format(patric_id, file_name))
-    return download_file_from_url(file_name, outdir=outdir)
-
-
-def download_genome_pattyfam_annotations(patric_id, outdir=".", throttle=False):
-    """
-    Downloads the PATRIC PATtyFams annotations for a given genome
+    Downloads the PATRIC feature annotations for a given genome. This includes
+    the PATtyFams annotations [1].
 
     Reference:
     -----------
-    Davis et al. PATtyFams: Protein Families for the Microbial Genomes in the PATRIC Database.
-    Frontiers in Microbiology. 2016;7:118. doi:10.3389/fmicb.2016.00118.
+    [1] Davis et al. PATtyFams: Protein Families for the Microbial Genomes in the
+        PATRIC Database. Frontiers in Microbiology.
+        2016;7:118. doi:10.3389/fmicb.2016.00118.
 
     Parameters:
     -----------
@@ -104,8 +80,8 @@ def download_genome_pattyfam_annotations(patric_id, outdir=".", throttle=False):
     """
     if throttle:
         sleep(2)  # Give that server a break!
-    file_name = urljoin(PATRIC_FTP_GENOMES_TAB_URL, patric_id + ".PATRIC.cds.tab")
-    logging.debug("Downloading PATRIC PATtyFams for genome {0!s} ({1!s})".format(patric_id, file_name))
+    file_name = urljoin(PATRIC_FTP_GENOMES_URL, patric_id, patric_id + ".PATRIC.features.tab")
+    logging.debug("Downloading PATRIC feature annotations for genome {0!s} ({1!s})".format(patric_id, file_name))
     return download_file_from_url(file_name, outdir=outdir)
 
 

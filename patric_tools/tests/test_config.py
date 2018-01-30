@@ -17,8 +17,13 @@ from __future__ import print_function, division, absolute_import, unicode_litera
 
 from unittest import TestCase
 
-from ..config import PATRIC_FTP_BASE_URL, PATRIC_FTP_CURRENT_RELEASE_URL, PATRIC_FTP_AMR_METADATA_URL, \
-    PATRIC_FTP_GENOMES_FNA_URL, PATRIC_FTP_GENOMES_METADATA_URL, PATRIC_FTP_GENOMES_TAB_URL
+try:
+    from urlparse import urljoin
+except ImportError: # Python 3
+    pass  # TODO: include urljoin
+
+from ..config import PATRIC_FTP_BASE_URL, PATRIC_FTP_AMR_METADATA_URL, \
+    PATRIC_FTP_GENOMES_URL, PATRIC_FTP_GENOMES_METADATA_URL
 
 class UtilityTests(TestCase):
     def setUp(self):
@@ -41,12 +46,6 @@ class UtilityTests(TestCase):
         """
         self._test_url(PATRIC_FTP_BASE_URL)
 
-    def test_ftp_current_release_url(self):
-        """
-        FTP current release URL is reachable
-        """
-        self._test_url(PATRIC_FTP_CURRENT_RELEASE_URL)
-
     def test_ftp_amr_metadata_url(self):
         """
         FTP antimicrobial resistance metadata is reachable
@@ -57,7 +56,8 @@ class UtilityTests(TestCase):
         """
         FTP genome FASTA file storage is reachable
         """
-        self._test_url(PATRIC_FTP_GENOMES_FNA_URL)
+        example_genome = "1280.4252"
+        self._test_url(urljoin(PATRIC_FTP_GENOMES_URL, example_genome, example_genome + ".fna"))
 
     def test_ftp_genomes_metadata_url(self):
         """
@@ -69,4 +69,5 @@ class UtilityTests(TestCase):
         """
         FTP genome TAB file storage is reachable
         """
-        self._test_url(PATRIC_FTP_GENOMES_TAB_URL)
+        example_genome = "1280.4252"
+        self._test_url(urljoin(PATRIC_FTP_GENOMES_URL, example_genome, example_genome + ".PATRIC.features.tab"))
