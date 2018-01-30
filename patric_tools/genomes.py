@@ -47,7 +47,7 @@ def download_genome_contigs(patric_id, outdir=".", throttle=False):
     """
     if throttle:
         sleep(2)  # Give that server a break!
-    file_name = urljoin(PATRIC_FTP_GENOMES_URL, patric_id, patric_id + ".fna")
+    file_name = urljoin(PATRIC_FTP_GENOMES_URL, patric_id + "/" + patric_id + ".fna")
     logging.debug("Downloading contigs for genome {0!s} ({1!s})".format(patric_id, file_name))
     return download_file_from_url(file_name, outdir=outdir)
 
@@ -80,7 +80,7 @@ def download_genome_features(patric_id, outdir=".", throttle=False):
     """
     if throttle:
         sleep(2)  # Give that server a break!
-    file_name = urljoin(PATRIC_FTP_GENOMES_URL, patric_id, patric_id + ".PATRIC.features.tab")
+    file_name = urljoin(PATRIC_FTP_GENOMES_URL, patric_id + "/" + patric_id + ".PATRIC.features.tab")
     logging.debug("Downloading PATRIC feature annotations for genome {0!s} ({1!s})".format(patric_id, file_name))
     return download_file_from_url(file_name, outdir=outdir)
 
