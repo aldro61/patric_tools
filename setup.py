@@ -25,7 +25,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 
 setup(
     name='PATRIC Tools',
-    version='0.0.1',
+    version='1.0.0',
 
     description='A Python package to interact with the PATRIC database (https://www.patricbrc.org)',
     long_description=long_description,
@@ -41,12 +41,6 @@ setup(
 
     # See https://pypi.python.org/pypi?%3Aaction=list_classifiers
     classifiers=[
-        # How mature is this project? Common values are
-        #   3 - Alpha
-        #   4 - Beta
-        #   5 - Production/Stable
-        'Development Status :: 2 - Pre-Alpha',
-
         # Indicate who your project is intended for
         'Intended Audience :: Developers',
         'Intended Audience :: Science/Research'
@@ -63,7 +57,7 @@ setup(
     ],
 
     # What does your project relate to?
-    keywords='patric bioinformatics antibiotic-resistance genomics database',
+    keywords='patric bioinformatics antibiotic antimicrobial resistance genomics database',
 
     packages=find_packages(),
 
