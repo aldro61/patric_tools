@@ -17,11 +17,10 @@ import os
 import posixpath
 
 try:
-    from urlparse import urlsplit, urljoin
-    from urllib import unquote, urlretrieve
-except ImportError: # Python 3
-    from urllib.parse import urlsplit, unquote  #TODO: include urljoin
-    from urllib.request import urlretrieve
+    from urlparse import urlsplit
+    from urllib import unquote
+except ImportError:  # Python 3
+    from urllib.parse import urlsplit, unquote
 
 
 def download_file_from_url(url, outdir):
@@ -51,7 +50,7 @@ def download_file_from_url(url, outdir):
         system("wget --quiet -o /dev/null -O {0!s} --continue --timeout 20 {1!s}".format(os.path.join(outdir, url_extract_file_name(url)), url))
         return ""
     except Exception as e:
-        print e
+        print(e)
         return url + str(e)
 
 

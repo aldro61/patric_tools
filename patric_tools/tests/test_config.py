@@ -18,12 +18,15 @@ from __future__ import print_function, division, absolute_import, unicode_litera
 from unittest import TestCase
 
 try:
+    from urllib2 import urlopen
     from urlparse import urljoin
-except ImportError: # Python 3
-    pass  # TODO: include urljoin
+except ImportError:  # Python 3
+    from urllib.parse import urljoin
+    from urllib.request import urlopen
 
 from ..config import PATRIC_FTP_BASE_URL, PATRIC_FTP_AMR_METADATA_URL, \
     PATRIC_FTP_GENOMES_URL, PATRIC_FTP_GENOMES_METADATA_URL
+
 
 class UtilityTests(TestCase):
     def setUp(self):
@@ -34,9 +37,8 @@ class UtilityTests(TestCase):
         pass
 
     def _test_url(self, url):
-        import urllib2
         try:
-            urllib2.urlopen(url, timeout=10)
+            urlopen(url, timeout=10)
         except:
             self.fail("Could not reach {0!s}".format(url))
 

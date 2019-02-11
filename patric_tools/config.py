@@ -14,11 +14,9 @@
 
 """
 try:
-    from urlparse import urlsplit, urljoin
-    from urllib import unquote, urlretrieve
-except ImportError: # Python 3
-    from urllib.parse import urlsplit, unquote  # TODO: include urljoin
-    from urllib.request import urlretrieve
+    from urlparse import urljoin
+except ImportError:  # Python 3
+    from urllib.parse import urljoin
 
 
 PATRIC_FTP_BASE_URL = "ftp://ftp.patricbrc.org"
