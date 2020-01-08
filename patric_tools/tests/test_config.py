@@ -61,6 +61,20 @@ class UtilityTests(TestCase):
         example_genome = "1280.4252"
         self._test_url(urljoin(PATRIC_FTP_GENOMES_URL, example_genome + "/" + example_genome + ".fna"))
 
+    def test_ftp_genomes_annotations_url(self):
+        """
+        FTP genome annotation file storage is reachable
+        """
+        example_genome = "1280.4252"
+        self._test_url(urljoin(PATRIC_FTP_GENOMES_URL, example_genome + "/" + example_genome + ".PATRIC.features.tab"))
+
+    def test_ftp_genomes_specialty_genes_url(self):
+        """
+        FTP genome specialty gene file storage is reachable
+        """
+        example_genome = "1280.4252"
+        self._test_url(urljoin(PATRIC_FTP_GENOMES_URL, example_genome + "/" + example_genome + ".PATRIC.spgene.tab"))
+
     def test_ftp_genomes_metadata_url(self):
         """
         FTP genome metadata is reachable
