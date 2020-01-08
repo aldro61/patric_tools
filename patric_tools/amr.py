@@ -52,6 +52,7 @@ def get_amr_data_by_species_and_antibiotic(antibiotic, species=None, drop_interm
     Notes:
     ------
     The phenotypes "Non-susceptible" and "Nonsusceptible" are treated as "resistant".
+    The phenotypes "S" are treated as "susceptible".
     The phenotype "Susceptible-dose dependent" is treated as "intermediate.
     The phenotype "Not defined" is filtered from the data.
 
@@ -69,13 +70,9 @@ def get_amr_data_by_species_and_antibiotic(antibiotic, species=None, drop_interm
 
     # Drop strange phenotype names that were encountered
     amr = amr.loc[amr.resistant_phenotype != "Not defined"]
-    # amr = amr.loc[amr.resistant_phenotype != "Non-susceptible"]
-    # amr = amr.loc[amr.resistant_phenotype != "Nonsusceptible"]
-    # amr = amr.loc[amr.resistant_phenotype != "Susceptible-dose dependent"]
-    amr = amr.loc[amr.resistant_phenotype != "S"]
 
     # XXX: Runtime test to see if the data structure has changed
-    assert len(np.unique(amr.resistant_phenotype)) <= 6
+    assert len(np.unique(amr.resistant_phenotype)) <= 7
 
     # Drop intermediate if needed
     if drop_intermediate:
