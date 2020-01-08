@@ -51,8 +51,9 @@ def get_amr_data_by_species_and_antibiotic(antibiotic, species=None, drop_interm
 
     Notes:
     ------
-    The phenotypes "Not defined", "Non-susceptible" and "Nonsusceptible" are dropped to avoid adding noise to the data.
-    However, this phenotypes are not commonly encountered in the data.
+    The phenotypes "Non-susceptible" and "Nonsusceptible" are treated as "resistant".
+    The phenotype "Susceptible-dose dependent" is treated as "intermediate.
+    The phenotype "Not defined" is filtered from the data.
 
     """
     if amr_metadata_file is None:
@@ -68,11 +69,13 @@ def get_amr_data_by_species_and_antibiotic(antibiotic, species=None, drop_interm
 
     # Drop strange phenotype names that were encountered
     amr = amr.loc[amr.resistant_phenotype != "Not defined"]
-    amr = amr.loc[amr.resistant_phenotype != "Non-susceptible"]
-    amr = amr.loc[amr.resistant_phenotype != "Nonsusceptible"]
+    # amr = amr.loc[amr.resistant_phenotype != "Non-susceptible"]
+    # amr = amr.loc[amr.resistant_phenotype != "Nonsusceptible"]
+    # amr = amr.loc[amr.resistant_phenotype != "Susceptible-dose dependent"]
+    amr = amr.loc[amr.resistant_phenotype != "S"]
 
     # XXX: Runtime test to see if the data structure has changed
-    assert len(np.unique(amr.resistant_phenotype)) <= 3
+    assert len(np.unique(amr.resistant_phenotype)) <= 6
 
     # Drop intermediate if needed
     if drop_intermediate:
@@ -85,7 +88,10 @@ def get_amr_data_by_species_and_antibiotic(antibiotic, species=None, drop_interm
 
     numeric_phenotypes = np.zeros(amr.shape[0], dtype=np.uint8)
     numeric_phenotypes[amr.resistant_phenotype.values == "Resistant"] = 1
+    numeric_phenotypes[amr.resistant_phenotype.values == "Non-susceptible"] = 1
+    numeric_phenotypes[amr.resistant_phenotype.values == "Nonsusceptible"] = 1
     numeric_phenotypes[amr.resistant_phenotype.values == "Intermediate"] = 2
+    numeric_phenotypes[amr.resistant_phenotype.values == "Susceptible-dose dependent"] = 2
 
     return amr["genome_name"].values, amr["genome_id"].values, numeric_phenotypes
 
