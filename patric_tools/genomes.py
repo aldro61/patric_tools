@@ -85,6 +85,32 @@ def download_genome_features(patric_id, outdir=".", throttle=False):
     return download_file_from_url(file_name, outdir=outdir)
 
 
+def download_genome_specialty_genes(patric_id, outdir=".", throttle=False):
+    """
+    Downloads the specialty gene annotations for a given genome.
+
+    Parameters:
+    -----------
+    patric_id: str
+            The PATRIC identifier of the genome
+    outdir: str
+        The output directory in which to store the annotation file
+    throttle: bool
+        Whether or not to throttle the download by sleeping for a short period of time
+
+    Returns:
+    --------
+    exception: str
+        Empty string if no exception occurred, exception info otherwise
+
+    """
+    if throttle:
+        sleep(2)  # Give that server a break!
+    file_name = urljoin(PATRIC_FTP_GENOMES_URL, patric_id + "/" + patric_id + ".PATRIC.spgene.tab")
+    logging.debug("Downloading PATRIC specialty gene annotations for genome {0!s} ({1!s})".format(patric_id, file_name))
+    return download_file_from_url(file_name, outdir=outdir)
+
+
 def get_latest_metadata(outdir):
     """
     Downloads the latest genome metadata (not to be confused with AMR metadata)
